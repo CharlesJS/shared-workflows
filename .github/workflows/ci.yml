@@ -23,7 +23,7 @@ jobs:
     - uses: SwiftyLab/setup-swift@latest
     - name: Install file system support
       if: ${{ inputs.setup_filesystems }}
-      uses: CharlesJS/test-helpers/.github/setup-filesystems@0.1.2
+      uses: CharlesJS/test-helpers/.github/setup-filesystems@0.3.0
     - name: Fetch apt packages
       if: contains(fromJSON('["ubuntu-latest", "ubuntu-24.04-arm"]'), matrix.os)
       run: |

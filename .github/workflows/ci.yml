@@ -23,7 +23,11 @@ jobs:
     - uses: SwiftyLab/setup-swift@latest
     - name: Install file system support
       if: ${{ inputs.setup_filesystems }}
-      uses: CharlesJS/test-helpers/.github/setup-filesystems@0.3.0
+      uses: CharlesJS/test-helpers/.github/setup-filesystems@0.3.11
+    - name: Fetch stdbuf for older macOS
+      if: matrix.os == 'macos-15-intel'
+      run: |
+        brew install coreutils
     - name: Fetch apt packages
       if: contains(fromJSON('["ubuntu-latest", "ubuntu-24.04-arm"]'), matrix.os)
       run: |
@@ -42,7 +46,7 @@ jobs:
     - name: Build
       run: swift build --build-tests --enable-code-coverage -v ${{ steps.traits.outputs.flags }}
     - name: Run tests
-      run: swift test --enable-code-coverage -v ${{ steps.traits.outputs.flags }} --xunit-output testresults.xml
+      run: stdbuf -oL swift test --enable-code-coverage -v ${{ steps.traits.outputs.flags }} --xunit-output testresults.xml
     - name: Collect artifacts
       if: always()
       run: |

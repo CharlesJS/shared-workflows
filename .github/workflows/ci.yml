@@ -29,7 +29,7 @@ jobs:
       run: |
         brew install coreutils
     - name: Fetch apt packages
-      if: contains(fromJSON('["ubuntu-latest", "ubuntu-24.04-arm"]'), matrix.os)
+      if: runner.os == 'Linux'
       run: |
         sudo apt update
         sudo apt-get install -y libacl1-dev uuid-dev
@@ -46,7 +46,12 @@ jobs:
     - name: Build
       run: swift build --build-tests --enable-code-coverage -v ${{ steps.traits.outputs.flags }}
     - name: Run tests
-      run: stdbuf -oL swift test --enable-code-coverage -v ${{ steps.traits.outputs.flags }} --xunit-output testresults.xml
+      run: |
+        if [ "${{ runner.os }}" = "Linux" ]; then
+          export TMPDIR="${{ runner.temp }}"
+        fi
+
+        stdbuf -oL swift test --enable-code-coverage -v ${{ steps.traits.outputs.flags }} --xunit-output testresults.xml
     - name: Collect artifacts
       if: always()
       run: |

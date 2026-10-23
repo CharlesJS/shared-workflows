@@ -3,11 +3,16 @@ name: Shared CI Build
 on:
   workflow_call:
     inputs:
-        setup_filesystems:
-          description: 'Set up support for various file systems'
-          required: false
-          type: boolean
-          default: false
+      setup_filesystems:
+        description: 'Set up support for various file systems'
+        required: false
+        type: boolean
+        default: false
+      traits:
+        description: JSON array of traits to test
+        required: false
+        type: string
+        default: '[""]'
 
 jobs:
   unit_tests:
@@ -15,7 +20,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-latest, macos-15-intel, ubuntu-latest, ubuntu-24.04-arm]
-        traits: ["none", "Foundation"]
+        traits: ${{ fromJSON(inputs.traits) }}
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -36,9 +41,11 @@ jobs:
     - name: Determine traits flags
       id: traits
       run: |
-        if [[ ${{ matrix.traits }} = 'all' ]]; then
+        if [[ -z "${{ matrix.traits }}" ]]; then
+          echo "flags=" >> $GITHUB_OUTPUT
+        elif [[ "${{ matrix.traits }}" = 'all' ]]; then
           echo "flags=--enable-all-traits" >> $GITHUB_OUTPUT
-        elif [[ ${{ matrix.traits }} = 'none' ]]; then
+        elif [[ "${{ matrix.traits }}" = 'none' ]]; then
           echo "flags=--disable-default-traits" >> $GITHUB_OUTPUT
         else
           echo "flags=--traits ${{ matrix.traits }}" >> $GITHUB_OUTPUT

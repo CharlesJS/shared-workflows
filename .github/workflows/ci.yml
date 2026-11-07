@@ -38,6 +38,16 @@ jobs:
       run: |
         sudo apt update
         sudo apt-get install -y libacl1-dev uuid-dev
+    - name: Cache Swift packages
+      uses: actions/cache@v6
+      with:
+        path: |
+          .build
+          ~/Library/Caches/org.swift.swiftpm
+          ~/.cache/org.swift.swiftpm
+        key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved', '**/Package.swift') }}
+        restore-keys: |
+          ${{ runner.os }}-spm-
     - name: Determine traits flags
       id: traits
       run: |

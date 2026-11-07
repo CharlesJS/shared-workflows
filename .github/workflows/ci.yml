@@ -42,7 +42,9 @@ jobs:
       uses: actions/cache@v6
       with:
         path: |
-          .build
+          .build/repositories
+          .build/artifacts
+          .build/plugins
           ~/Library/Caches/org.swift.swiftpm
           ~/.cache/org.swift.swiftpm
         key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved', '**/Package.swift') }}

@@ -28,7 +28,7 @@ jobs:
     - uses: SwiftyLab/setup-swift@latest
     - name: Install file system support
       if: ${{ inputs.setup_filesystems }}
-      uses: CharlesJS/test-helpers/.github/setup-filesystems@0.3.11
+      uses: CharlesJS/test-helpers/.github/setup-filesystems@0.3.12
     - name: Fetch stdbuf for older macOS
       if: matrix.os == 'macos-15-intel'
       run: |
